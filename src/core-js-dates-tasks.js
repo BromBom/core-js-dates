@@ -69,8 +69,13 @@ function getDayName(date) {
  * Date('2024-02-13T00:00:00Z') => Date('2024-02-16T00:00:00Z')
  * Date('2024-02-16T00:00:00Z') => Date('2024-02-23T00:00:00Z')
  */
-function getNextFriday(/* date */) {
-  throw new Error('Not implemented');
+function getNextFriday(date) {
+  let msCarrentData = date.getTime();
+  do {
+    msCarrentData += 86_400_000;
+  } while (new Date(msCarrentData).getDay() !== 5);
+
+  return new Date(msCarrentData);
 }
 
 /**
