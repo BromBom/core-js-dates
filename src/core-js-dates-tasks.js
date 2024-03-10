@@ -281,8 +281,35 @@ function getQuarter(date) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
-  throw new Error('Not implemented');
+function getWorkSchedule(period, countWorkDays, countOffDays) {
+  const { start, end } = period;
+
+  const yearStart = +start.split('-')[2];
+  const monthStart = +start.split('-')[1];
+  const dayStart = +start.split('-')[0];
+  const yearEnd = +end.split('-')[2];
+  const monthEnd = +end.split('-')[1];
+  const dayEnd = +end.split('-')[0];
+  const msLustDay = new Date(yearEnd, monthEnd - 1, dayEnd).getTime();
+  let msCurrentDay = new Date(yearStart, monthStart - 1, dayStart).getTime();
+  const arr = [];
+  let workDayCounter = countWorkDays;
+  const offDayCounter = countOffDays;
+
+  let workingDay = '';
+
+  while (msCurrentDay <= msLustDay) {
+    while (workDayCounter > 0 && msCurrentDay <= msLustDay) {
+      workingDay = `${new Date(msCurrentDay).getDate().toString().padStart(2, '0')}-${(new Date(msCurrentDay).getMonth() + 1).toString().padStart(2, '0')}-${new Date(msCurrentDay).getFullYear()}`;
+      arr.push(workingDay);
+      msCurrentDay += 86_400_000;
+      workDayCounter -= 1;
+    }
+    workDayCounter = countWorkDays;
+    msCurrentDay += 86_400_000 * offDayCounter;
+  }
+
+  return arr;
 }
 
 /**
